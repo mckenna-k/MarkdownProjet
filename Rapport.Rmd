@@ -1,0 +1,24 @@
+---
+title: "Rapport"
+author: "Kevin McKenna, Fanny Rebiffe, Billy Ngaba"
+date: "12/8/2020"
+output: html_document
+---
+
+<h1> Choisir un sujet </h1>
+On a eu beaucoup de difficulte a choisir un sujet.  On avait plusieurs idee, mais finalement chaqu'une semblait soit trop complique, soit demontre pas assez les capacite de R. On a finalement tombe sur l'idee de faire un sorti d'un CV pour demontrer les capacite de Shiny.  Donc on savait qu'on aura besoin de plusieurs different Widgets et d'utiliser les different fonctions pour construire les bonnes regions.  
+
+<h1> Repartition des taches </h1>
+Tout au debut on a proposer que chaque personne font leur propre application sous Shiny qui affiche un section d'un resume.  Kevin faisait le titre et la photo, Fanny les competences, loisirs et autres, et Billy faisait l'education et les experience professionelles.  On disait que on repartrira le restes des taches a fur et a mesure dependant comment on avance.  Apres avoir travailler pour quelque semaine, Fanny a fait la parti markdown et la transfer des donnees de l'application Shiny au fiche Markdown.  Kevin a fait le package et la mit sur GitHub,  et Billy etait toujours sur son partie de l'application.  
+
+
+<h1> Utiles </h1>
+On a utiliser Rstudio pour tout nos codes, Github pour le stockage du package et pour faire du versioning du package, et discord pour la partage de codes et de communication.  Ca serait bien si on aura pu utiliser github pour tout le projet et pour partage de code, mais on est tous debutant de Git et Github alors on a pas pense a le faire ni pu le faire.  
+
+
+<h1> Development </h1>
+Notre developement a commencer assez vite avec les parties de Kevin et Fanny qui sont sortie assez rapidement.  Fanny a puis avance encore plus vite et a fait la parti markdown qui prend les resultats du application Shiny et les affiches dans un fichier html.  
+
+
+<h1> Conclusion </h1>
+Finalement on a eu plus de difficulte qu'on a prevu, particulierement en travaille de groupe a distance.  On etait souvent en attente des autres membres de la groupes et ca avance pas du tout comme en voudrait.  Aussi on a aussi pris connaisance que finalement ca demontre pas assez le cote statistiques laquelle R est bien connues mais on etait trop dans notre sujets pour le changer et on avait deja beaucoup de problemes sur ce qu'on faisait pour ajouter autres trucs statistiques.  Peut-etre shiny est pas trop  
