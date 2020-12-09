@@ -2,23 +2,127 @@
 title: "Rapport"
 author: "Kevin McKenna, Fanny Rebiffe, Billy Ngaba"
 date: "12/8/2020"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
 ---
+# mode d'emploi de l'appli
+## Utilisation
 
-<h1> Choisir un sujet </h1>
-On a eu beaucoup de difficulte a choisir un sujet.  On avait plusieurs idee, mais finalement chaqu'une semblait soit trop complique, soit demontre pas assez les capacite de R. On a finalement tombe sur l'idee de faire un sorti d'un CV pour demontrer les capacite de Shiny.  Donc on savait qu'on aura besoin de plusieurs different Widgets et d'utiliser les different fonctions pour construire les bonnes regions.  
+![Image]()
 
-<h1> Repartition des taches </h1>
-Tout au debut on a proposer que chaque personne font leur propre application sous Shiny qui affiche un section d'un resume.  Kevin faisait le titre et la photo, Fanny les competences, loisirs et autres, et Billy faisait l'education et les experience professionelles.  On disait que on repartrira le restes des taches a fur et a mesure dependant comment on avance.  Apres avoir travailler pour quelque semaine, Fanny a fait la parti markdown et la transfer des donnees de l'application Shiny au fiche Markdown.  Kevin a fait le package et la mit sur GitHub,  et Billy etait toujours sur son partie de l'application.  
+## Exploitation et maintenance
+
+# déroulement du projet 
+
+## Choix du sujet
+
+Nous avons eu beaucoup de difficultés à choisir un sujet. Plusieurs idées ont été proposées. Par exemple, nous avions envisagé d'analyser des données open sources mises à disposition par la ville de Grenoble. Finalement nous avons éliminé ces idées car il semblait que, soit la récolte des données risquait d'être trop longue à mettre en oeuvre, soit le sujet ne laissait pas suffisemment d'opportunité de démontrer les capacités de R en mode developpeur. 
+
+Etant en phase de recherche de stage, nous avons remarqué que, d'un pays à l'autre, le format du CV n'était pas le même. Par exemple, le CV américain est sobre, contenant des listes et du texte, alors que le CV Français est souvent plus édulcoré avec par exemple des graphiques. Nous avons donc perçu la possibilité d'utiliser à la fois :
+<ul>
+- Shiny pour créer une interface utilisateur avec différents widgets pour chacune des catégories du CV, 
+- Markdown pour créer une sortie html du CV,
+- ggplot2 pour créer des graphiques, 
+- les different fonctions pour construire les bonnes regions. @Kevin : j'ai pas compris ce que tu entendais par là
+- la programmation S3 pour traiter différement les données entrées par l'utilisateur selon le type de sortie choisie.
+</ul>
 
 
-<h1> Utiles </h1>
-On a utiliser Rstudio pour tout nos codes, Github pour le stockage du package et pour faire du versioning du package, et discord pour la partage de codes et de communication.  Ca serait bien si on aura pu utiliser github pour tout le projet et pour partage de code, mais on est tous debutant de Git et Github alors on a pas pense a le faire ni pu le faire.  
+(répartition taches (qui a fait quoi), difficultés du au fait que certaines parties dépendaient du travail des autres : pb de synchronisation)
+
+## Répartition des taches
+
+Afin de pouvoir collaborer à distance, nous avons défini deux phases de développement : 
+<ul>
+- interface utilisateur Shiny
+- sortie html, programmation S3, package
+</ul>
+
+Dans un premier temps, nous nous sommes réparti le travail de développement de l'interface Shiny en fonction des sections du CV :
+<ul>
+- Kevin : titre, informations personnelles et photo
+- Billy : objectif, expérience professionnelle, formation
+- Fanny : compétences, centres d'intéret, autres
+</ul>
+
+Nous avons donc chacun travaillé sur notre propre application Shiny afin que chacun puisse debeuguer son application sans être perturbé ou perturber l'application des autres.
+
+Nous avions initialement prévu de rassembler les trois parties Shiny avant de répartir le travail sur la partie Markdown. Cependant, un décalage au sein de l'équipe s'est créé. Nous avons donc adapté notre organisation. Pour permettre à celui qui en avait besoin, de prendre le temps de résourdre ses difficultés, les autres ont avancé sur des sujets de leur initiative à partir des parties Shiny qui avaient pu être finalisées. Ainsi, la suite du développement s'est organisé comme suit :
+<ul>
+- Kevin : création du package, alimentation du package avec les fonctions et dataframes créés par chacun, gestion des versions du package avec github, rédaction des parties titre, informations personnelles et photo de la sortie html du CV
+- Billy : poursuite de la programmation des parties objectif, expérience professionnelle, formation de l'interface Shiny
+- Fanny : création de la partie markdown, programmation du transfert d'informations entre shiny et markdown, programmation S3 pour gérer l'affichage des sections en fonction du pays, rédaction des parties compétences, centres d'intérets, autres de la sortie html du CV.
+</ul>
+
+# Développement 
+
+## Traduction
+
+Pour gérer le fait que certains éléments de l'application (label et liste de choix) et les outputs soient mis à jour en fonction du pays choisi, nous avons utilisé :
+<ul>
+- le dataframe : la valeur selectionnée dependant du nom de la colonne, identifiée par le nom du pays, et de la ligne, identifiée par le nom de la composante à traduire
+> <cite> mise a jour du titre de la catégorie "skills" en fonction du pays choisi </cite>
+> output$skillsTitle<-renderText({paste(cat["skills",input$Langue])})
+
+- @Kevin : as tu fait autrement ? si oui, peux tu l'expliquer ?
+</ul>
+
+## Condition
+
+Sous Shiny, une condition peut être codée de différentes manières :
+<ul>
+- conditional panel : permet de faire apparaitre ou non des widgets en fonction d'une condition calculée dans le server
+- observeEvent + update...Input : permet de mettre à jour les paramètres d'un widget de manière réactif, c'est à dire en fonction d'action de l'utilisateur (modification de la valeur d'un input)
+- render... ou reactive : Reactive met à jour une variable en fonction d'input. Cette variable peut ensuite être utilisée dans un render... qui est ensuite utilisée dans un widget
+@Kevin : apeux tu vérifier/détailler ?
+- IfElse : @Kevin : apeux tu détailler ?
+</ul>
+
+## Répétition d'une instruction
+
+Pour répéter une instruction, nous sommes habitué à utiliser une boucle for ou while. Pour Shiny, nous avons trouvé qu'il était plus facile d'utiliser un fonction lapply.
+
+## Programmation S3
+
+R offre la possibilité de faire de la programmation orienté objet. Dans notre cas, nous avons choisi d'utiliser cet outil pour créer des objets CV.FR et CV.US. C'est deux objets ont un constructeur commun : as.CV.categorie qui va les mettre dans un format plus facile à exploiter pour les methodes ainsi que de mettre à jour leur attribu "class". Deux fonctions "is.CV.FR" et "is.CV.US" permettent de vérifier qu'une variable est de type CV.FR ou CV.US. Enfin, une méthode "show" permet de créer des visualisations en fonction de la classe de l'objet et d'une option choisi dans le cas d'un objet CV.FR.
 
 
-<h1> Development </h1>
-Notre developement a commencer assez vite avec les parties de Kevin et Fanny qui sont sortie assez rapidement.  Fanny a puis avance encore plus vite et a fait la parti markdown qui prend les resultats du application Shiny et les affiches dans un fichier html.  
+# Piste d'amélioration 
+
+## Utilisation R shiny
+
+Nous avons remarqué que l'application mettait un certain temps à s'initialiser. Cela est peut être du au fait que Shiny n'est peut être pas adapté pour créer un formulaire. Shiny est peut être plutot adapté pour afficher des résultats avec un nombre d'interactions utilisateur limité. Cependant, nous envisageons des piste d'amélioration :
+- Passer par une programmation RCPP permettrait peut être d'optimiser le code
+
+ sujet pas le plus pertinant pour R : lenteur application shiny, pas beaucoup de stat à nuancer car
+ 
+## Gestion de projet différente
+
+Nous avons utiliser Rstudio pour tout nos codes, Github pour le stockage et versioning du package, et discord pour le partage de codes et pour la communication.  
+
+Débutant avec l'utilisation de Git et Github, nous avons utilisé cet outil tardivement. Nous aurions pu utiliser Github pour tout le projet et pour le partage du code mais aurait risqué de rendre le code plus long a débeuguer. Cependant, développer un programme commun plutot que de fractionner le travail aurait eu l'avantage de créer une base commune pour rendre le code plus cohérent (utilisation des mêmes solutions au problème commun comme la traduction des champs en fonction du pays choisi).
+ 
+## Ajout de fonctionnalités
+
+### Autres de visualisations
+
+Les limites de l'interface Shiny ayant été atteintes, nous avons été également limité dans l'exploitation des données de sortie. Nous avions initialement mis en place d'autres visualisations plus pertinentes pour une quantité de des données supérieures. Par exemple, si le nombre de champs remplis était supérieur à 15, un wordcloud, dans lequel la taille du mots était proportionnelle à la valeur selectionnée dans le "slider input", permettait de représenter la personnalité de manière plus lisible qu'un camembert.
+
+### Sauvegarde
+
+Créer un CV est un processus long et itératif. Une piste d'amélioration serait donc de permettre à l'utilisateur de sauvegarder sa saisie pour pouvoir y revenir à un autre moment. Pour cela, nous avions envisagé de créer un second bouton permettant d'exporter les données saisies sous forme de fichier .csv. Cette partie du code a été rédigée. La difficulté de cette fonctionnalité supplémentaire réside en fait dans l'import de ce fichier csv puis la mise à jour des variables.
 
 
-<h1> Conclusion </h1>
-Finalement on a eu plus de difficulte qu'on a prevu, particulierement en travaille de groupe a distance.  On etait souvent en attente des autres membres de la groupes et ca avance pas du tout comme en voudrait.  Aussi on a aussi pris connaisance que finalement ca demontre pas assez le cote statistiques laquelle R est bien connues mais on etait trop dans notre sujets pour le changer et on avait deja beaucoup de problemes sur ce qu'on faisait pour ajouter autres trucs statistiques.  Peut-etre shiny est pas trop  
+## Utilisation du mode developpeur de R 
+
+Nous avons prévilégié le mode developpeur en nous concentrant sur l'utilisation de Github, la programmation S3 et le diversification des widget Shiny. Ceci s'est fait au détriment du mode utilisateur. En effet, nous n'avons pas beaucoup utiliser les librairies orientées manipulation de données comme dplyr, tidyverse, lubridate, etc.
+
+Les constructeurs et méthodes S3 pourraient être dans le package afin d'alléger la partie markdown du projet. 
+
+# Conclusion
+
+Finalement nous avons eu plus de difficultés que prevues initialement, particulierement en ce qui concerne le travail de groupe a distance. Par exemple, nous avons perdu du temps à attendre que tout les membres du groupe ait fini la partie Shiny.  
+
+Aussi nous avons également conscience que notre projet n'exploite pas assez le coté statistique pour lequelle R est bien connu mais on etait trop dans notre sujets pour le changer et on avait deja beaucoup de problemes sur ce qu'on faisait pour ajouter autres trucs statistiques.
