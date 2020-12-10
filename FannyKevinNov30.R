@@ -118,7 +118,6 @@ ui <- fluidPage(
           textOutput("adresseComplet"),
           textOutput("mailComplet"),
           textOutput("numeroComplet"),
-          plotOutput("plot", width = "5%", height = "2px", inline=F),
       ### SKILLS
           # affichage skills
           conditionalPanel(
@@ -139,6 +138,11 @@ ui <- fluidPage(
             condition = paste0('output.nbOther',1),
             tableOutput("otherTxt")
           ),
+
+
+          plotOutput("plot", width = "5%", height = "2px", inline=F),
+
+
 
       ### DOWNLOAD
           downloadButton("downloadData", "Download")

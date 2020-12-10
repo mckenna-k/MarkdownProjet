@@ -172,16 +172,26 @@ show.CV.FR <- function(obj, option = 1) {
 ```
 
 <br>
-<br>
 <hr>
 <h1>
 <center>
 ``` {r titre, echo=FALSE, results = 'asis'}
 cat(htmltools::htmlEscape(KBFpackage::catNomComplet(input$Langue,input$nom,input$prenom)))
 ```
+
+```{r, echo=FALSE, warning=FALSE, out.height='20%', out.width='20%'}
+if(is.null(input$photo)==FALSE) {
+  infile <- input$photo
+        filename <- normalizePath(file.path(infile$datapath))
+        list(src = filename)
+        knitr::include_graphics(filename)
+}
+
+```
 </center>
 </h1>
 <hr>
+
 <h4>
 <center>
 ``` {r, echo=FALSE, results = 'asis'}
@@ -194,20 +204,11 @@ cat((htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input
 </center>
 </h4>
 <hr>
-```{r, echo=FALSE, warning=FALSE, out.height='50%', out.width='50%'}
-if(is.null(input$photo)==FALSE) {
-  infile <- input$photo
-        filename <- normalizePath(file.path(infile$datapath))
-        list(src = filename)
-        knitr::include_graphics(filename)
-}
 
-```
-<hr>
 
 ## `r attributes(skillsTxt())$names[1]`
 
-
+<center>
 ```{r skills, echo=FALSE, warning=FALSE}
 
 
@@ -216,17 +217,17 @@ if (is.null(skillsTxt()) == FALSE) {
   show(skills)
 }
 ```
-
+</center>
 ## `r attributes(actTxt())$names[1]`
-
+<center>
 ```{r act, echo=FALSE, warning=FALSE}
 if (is.null(actTxt())==FALSE) {
   act <- as.CV.categorie(actTxt, input$Langue)
-  show(act, option=3)
+  show(act, option=1)
 }
 
 ```
-
+</center>
 ## `r attributes(otherTxt())$names[1]`
 
 ```{r other, echo=FALSE, warning=FALSE}
