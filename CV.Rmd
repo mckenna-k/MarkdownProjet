@@ -1,5 +1,5 @@
 ---
-title: "`r titre`"
+#title: "`r titre`"
 #author: "Fanny Kevin Billy"
 #date: "11/15/2020"
 output: html_document
@@ -9,7 +9,6 @@ output: html_document
 knitr::opts_chunk$set(fig.pos = 'H', echo = TRUE)
 ```
 
- TEST BLA BLA TEST re testtest
 
 ```{r library, include=FALSE, message=FALSE, warning=FALSE}
 #library(RColorBrewer)
@@ -172,34 +171,29 @@ show.CV.FR <- function(obj, option = 1) {
 }
 ```
 
-```{html, placement, echo=FALSE, warning = FALSE}
-
-```
-
-<h1 text-align= center;>
-
-``` {r, echo=FALSE, results = 'asis'}
+<br>
+<br>
+<hr>
+<h1>
+<center>
+``` {r titre, echo=FALSE, results = 'asis'}
 cat(htmltools::htmlEscape(KBFpackage::catNomComplet(input$Langue,input$nom,input$prenom)))
 ```
+</center>
 </h1>
 <hr>
+<h4>
+<center>
 ``` {r, echo=FALSE, results = 'asis'}
-cat(htmltools::htmlEscape(input$adresse))
+cat((htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input$tonNumero, input$Langue))),
+  htmltools::htmlEscape(input$adresse),
+  (htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))),
+  sep="  -------  ")
+
 ```
-
-``` {r, echo=FALSE, results = 'asis'}
- cat(htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail)))
-```
-
-``` {r, echo=FALSE, results = 'asis'}
-cat(htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input$tonNumero, input$Langue)))
-```
-
-<!-- `r htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))` -->
-<!-- <br> -->
-<!-- `r htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input$tonNumero, input$Langue))` -->
-<!-- <br> -->
-
+</center>
+</h4>
+<hr>
 ```{r, echo=FALSE, warning=FALSE, out.height='50%', out.width='50%'}
 if(is.null(input$photo)==FALSE) {
   infile <- input$photo
