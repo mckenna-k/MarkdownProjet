@@ -10,7 +10,6 @@ output:
 # mode d'emploi de l'appli
 ## Utilisation
 
-![](/cloud/project/Diapositive1.JPG)
 
 ## Exploitation et maintenance
 
@@ -25,12 +24,9 @@ Etant en phase de recherche de stage, nous avons remarqué que, d'un pays à l'a
 - Shiny pour créer une interface utilisateur avec différents widgets pour chacune des catégories du CV, 
 - Markdown pour créer une sortie html du CV,
 - ggplot2 pour créer des graphiques, 
-- les different fonctions pour construire les bonnes regions. @Kevin : j'ai pas compris ce que tu entendais par là
 - la programmation S3 pour traiter différement les données entrées par l'utilisateur selon le type de sortie choisie.
 </ul>
 
-
-(répartition taches (qui a fait quoi), difficultés du au fait que certaines parties dépendaient du travail des autres : pb de synchronisation)
 
 ## Répartition des taches
 
@@ -62,11 +58,14 @@ Nous avions initialement prévu de rassembler les trois parties Shiny avant de r
 
 Pour gérer le fait que certains éléments de l'application (label et liste de choix) et les outputs soient mis à jour en fonction du pays choisi, nous avons utilisé :
 <ul>
-- le dataframe : la valeur selectionnée dependant du nom de la colonne, identifiée par le nom du pays, et de la ligne, identifiée par le nom de la composante à traduire
+- le dataframe : la valeur selectionnée dependant du nom de la colonne, identifiée que par le nom du pays, ou par un fonction reactive (language) qui prend le nom du pays, et de la ligne, identifiée par le nom ou par l'index du ligne de la composante à traduire
+<br>
 > <cite> mise a jour du titre de la catégorie "skills" en fonction du pays choisi </cite>
+<br>
 > output$skillsTitle<-renderText({paste(cat["skills",input$Langue])})
+<br>
+> textInput("nom", label = paysdf[[language()]][2], value = paysdf[[language()]][9])
 
-- @Kevin : as tu fait autrement ? si oui, peux tu l'expliquer ?
 </ul>
 
 ## Condition
@@ -75,14 +74,17 @@ Sous Shiny, une condition peut être codée de différentes manières :
 <ul>
 - conditional panel : permet de faire apparaitre ou non des widgets en fonction d'une condition calculée dans le server
 - observeEvent + update...Input : permet de mettre à jour les paramètres d'un widget de manière réactif, c'est à dire en fonction d'action de l'utilisateur (modification de la valeur d'un input)
-- render... ou reactive : Reactive met à jour une variable en fonction d'input. Cette variable peut ensuite être utilisée dans un render... qui est ensuite utilisée dans un widget
-@Kevin : apeux tu vérifier/détailler ?
-- IfElse : @Kevin : apeux tu détailler ?
+- render... ou reactive : Reactive met à jour une variable en fonction d'input. Cette variable peut ensuite être utilisée dans un render... qui peut ensuite être utilisée dans un widget
+<br>
+> language<-reactive({switch(input\$Langue,"France" ="France", "USA" = "USA")})
+<br>
+> output$Ynom<-renderUI({textInput("nom", label =paysdf[[language()]][2], value = paysdf[[language()]][9])})
+
 </ul>
 
 ## Répétition d'une instruction
 
-Pour répéter une instruction, nous sommes habitué à utiliser une boucle for ou while. Pour Shiny, nous avons trouvé qu'il était plus facile d'utiliser un fonction lapply.
+Pour répéter une instruction, nous sommes habitué à utiliser une boucle for ou while. Pour Shiny, nous avons trouvé qu'il était plus facile d'utiliser un fonction lapply. On a aussi crée quelque fonction pour faire que le code est moins lourde et moins répétitive.
 
 ## Programmation S3
 
@@ -96,7 +98,6 @@ R offre la possibilité de faire de la programmation orienté objet. Dans notre 
 Nous avons remarqué que l'application mettait un certain temps à s'initialiser. Cela est peut être du au fait que Shiny n'est peut être pas adapté pour créer un formulaire. Shiny est peut être plutot adapté pour afficher des résultats avec un nombre d'interactions utilisateur limité. Cependant, nous envisageons des piste d'amélioration :
 - Passer par une programmation RCPP permettrait peut être d'optimiser le code
 
- sujet pas le plus pertinant pour R : lenteur application shiny, pas beaucoup de stat à nuancer car
  
 ## Gestion de projet différente
 
