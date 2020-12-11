@@ -3,6 +3,7 @@
 #author: "Fanny Kevin Billy"
 #date: "11/15/2020"
 output: html_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -195,11 +196,17 @@ if(is.null(input$photo)==FALSE) {
 <h4>
 <center>
 ``` {r, echo=FALSE, results = 'asis'}
-cat((htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input$tonNumero, input$Langue))),
-  htmltools::htmlEscape(input$adresse),
-  (htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))),
-  sep="  -------  ")
-
+cat((htmltools::htmlEscape(KBFpackage::catNumeroComplet(input$countryCode, input$tonNumero, input$Langue))))
+```
+<br>
+``` {r, echo=FALSE, results = 'asis'}
+cat(htmltools::htmlEscape(input$adresse))
+```
+<br>
+``` {r, echo=FALSE, results = 'asis'}
+cat((htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))))
+#,
+#  sep="  -------  ")
 ```
 </center>
 </h4>

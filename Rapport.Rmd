@@ -58,7 +58,7 @@ Nous avions initialement prévu de rassembler les trois parties Shiny avant de r
 
 Pour gérer le fait que certains éléments de l'application (label et liste de choix) et les outputs soient mis à jour en fonction du pays choisi, nous avons utilisé :
 <ul>
-- le dataframe : la valeur selectionnée dependant du nom de la colonne, identifiée que par le nom du pays, ou par un fonction reactive (language) qui prend le nom du pays, et de la ligne, identifiée par le nom ou par l'index du ligne de la composante à traduire
+- le dataframe : la valeur selectionnée dependant du nom de la colonne, identifiée par le nom du pays ou par une fonction reactive (language) qui prend le nom du pays, et de la ligne, identifiée par le nom ou par l'index du ligne de la composante à traduire
 <br>
 > <cite> mise a jour du titre de la catégorie "skills" en fonction du pays choisi </cite>
 <br>
@@ -66,7 +66,12 @@ Pour gérer le fait que certains éléments de l'application (label et liste de 
 <br>
 > textInput("nom", label = paysdf[[language()]][2], value = paysdf[[language()]][9])
 
+
 </ul>
+
+## Widgets
+
+Sous Shiny, il y a plein de différent widgets qu'on peut utiliser avec des fonctions assez varié. Comme on faisait un formulaire, on a utiliser beaucoup textInput, mais on a aussi utilisé les fileInput, radioButton, actionButton, et sliderInput.  Le facon qu'on a utilisé les widgets, était aussi varié.  On avait quelques-unes qui étaient appeler directement dans le UI, d'autres qui étaient premièrement appeler dans le UI mais la plupart du code était sur le coté serveur, et finalement d'autres qui étaient appeler dans les conditions. 
 
 ## Condition
 
@@ -79,6 +84,8 @@ Sous Shiny, une condition peut être codée de différentes manières :
 > language<-reactive({switch(input\$Langue,"France" ="France", "USA" = "USA")})
 <br>
 > output$Ynom<-renderUI({textInput("nom", label =paysdf[[language()]][2], value = paysdf[[language()]][9])})
+
+- if/else: permet de vérifier si un input est satisfaisant pour ce qui est demandé.  Par exemple, pour numéro, si le input n'a pas une longueur de 10 chiffres, ou qu'il y a un non-chiffre, un message d'erreur est retourné.  
 
 </ul>
 
