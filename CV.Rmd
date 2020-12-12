@@ -29,23 +29,6 @@ library(KBFpackage)
 ```{r S3, echo=FALSE, warning=FALSE}
 options(knitr.kable.NA = '')
 
-
-as.CV.categorie <- function(dataTxt, pays) {
-  if (is.function(dataTxt)) {
-    dataTxt <- dataTxt()
-  }
-  #if(is.null(dataTxt)){return(null)}
-  data <- dataTxt %>%
-    separate(1, c("type", names(dataTxt)[1]), sep = ":") %>%
-    separate(2, c(names(dataTxt)[1], message["level", input$Langue]), sep = paste0(", ", message["level", input$Langue]))
-  data[, 3] <- as.numeric(data[, 3])
-  class(data) <-
-    append(class(data), ifelse(pays == "France", "CV.FR", "CV.US"))
-  return(data)
-  
-}
-
-
 is.CV.FR <- function(obj) {
   return("CV.FR" %in% class(obj))
 }
@@ -220,7 +203,7 @@ cat((htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))))
 
 
 if (is.null(skillsTxt()) == FALSE) {
-  skills <- as.CV.categorie(skillsTxt, input$Langue)
+  skills <- KBFpackage::as.CV.categorie(skillsTxt, input$Langue)
   show(skills)
 }
 ```

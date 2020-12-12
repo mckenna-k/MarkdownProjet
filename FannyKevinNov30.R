@@ -1,8 +1,8 @@
 library(shiny)
 library(devtools)
 library(tidyverse)
-#devtools::install_github("mckenna-k/FinalProject")
 library(KBFpackage)
+#devtools::install_github("mckenna-k/FinalProject")
 #library(shinyWidgets)
 
 #nb max de compétences
@@ -15,18 +15,20 @@ M<-10
 ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
+          #Creation du widget Radio Button pour savoir quel format de CV.  La reponse va etre utiliser dans les autre widgets pour la langue
           radioButtons(
             "Langue",
             label = h3("Choisi une Langue"),
             choices = list("France" = "France", "USA" = "USA"),
             selected = "France"
           ),
+          #Creation du widget fileInput pour ajouter un photo dans le cas ou le format sera celle de la France
           conditionalPanel(condition = "input.Langue == 'France'",
                            fileInput(
                              "photo", label = h3("Ajoute un photo de profile (.jpeg, .png, .pdf)")
                            )),
 
-
+          #Creation des markeurs pour ajouter les inputs qui sont sur le cote serveur pour que c'est moins lourde cote UI
           uiOutput("Yphotos"),
           uiOutput("Ynom"),
           uiOutput("Yprenom"),
@@ -114,6 +116,8 @@ ui <- fluidPage(
         ), # fin side panel
 
         mainPanel(
+      ### HEADER
+          #affichage des champs pour le header
           textOutput("nomComplet"),
           textOutput("adresseComplet"),
           textOutput("mailComplet"),
@@ -139,7 +143,7 @@ ui <- fluidPage(
             tableOutput("otherTxt")
           ),
 
-
+      ###Affichage du photo.  En bas pour qu'il ne cache pas les autres champs
           plotOutput("plot", width = "5%", height = "2px", inline=F),
 
 
@@ -152,9 +156,11 @@ ui <- fluidPage(
 ) # fin UI
 
 server <- function(input, output, session) {
+  #Rend la langue.  Finalement on ne l'affiche pas
   output$Langue <- renderPrint({
     input$Langue
   })
+  #observe le input du Langue.  Si c'est "France", on ajoute le photo, sinon on fait rien
   observe({
     if (input$Langue == "France" && !is.null(input$photo)) {
       output$plot <- renderImage({
@@ -165,12 +171,13 @@ server <- function(input, output, session) {
       deleteFile = F)
     }
   })
-
+  #Prend en compte la langue pour que tout les textInputs sont dans la bonne langue
   language <- reactive({
     switch(input$Langue,
            "France" = "France",
            "USA" = "USA")
   })
+  #Affichage des champs a remplire pour le header. Label donne la question et value donne un exemple.
   output$Ynom <- renderUI({
     textInput("nom", label = paysdf[[language()]][2], value = paysdf[[language()]][9])
   })
@@ -192,6 +199,7 @@ server <- function(input, output, session) {
 #####
 # Header
 #####
+  #concaténe les champs du header pour les afficher.
   output$nomComplet <- renderText(
     KBFpackage::catNomComplet(input$Langue, input$nom, input$prenom)
   )
