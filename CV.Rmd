@@ -69,7 +69,37 @@ cat((htmltools::htmlEscape(KBFpackage::catMailComplet(input$mail))))
 </center>
 </h4>
 <hr>
+<center>
+```{r objective, echo=FALSE, results = 'asis'}
+cat(input$user_text_Obj)
+```
+</center>
 
+## `r attributes(eduTxt())$names[1]`
+
+<center>
+```{r education, echo=FALSE, warning=FALSE}
+
+
+if (is.null(eduTxt()) == FALSE) {
+  education <- KBFpackage::as.CV.categorie(eduTxt, input$Langue)
+  KBFpackage::show(education)
+}
+```
+</center>
+
+## `r attributes(weTxt())$names[1]`
+
+<center>
+```{r workExp, echo=FALSE, warning=FALSE}
+
+
+if (is.null(weTxt()) == FALSE) {
+  workExp <- KBFpackage::as.CV.categorie(weTxt, input$Langue)
+  KBFpackage::show(workExp)
+}
+```
+</center>
 
 ## `r attributes(skillsTxt())$names[1]`
 

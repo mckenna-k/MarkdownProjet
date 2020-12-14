@@ -40,6 +40,62 @@ ui <- fluidPage(
           #choix du pays
             # selectInput("Langue", label="Type" , choices=country),
 
+      ### OBJECTIF
+      textInput(
+        "user_text_Obj",
+        label = h3("Objectif"),
+        value = " "
+      ),
+      hr(),
+
+      ### EDUCATION
+      # titre et boutons + -
+      h3(textOutput("eduTitle")),
+      actionButton("plusEdu", label = "+"),
+      actionButton("moinsEdu", label = "-"),
+      hr(),
+
+      # apparition des champs activities en fonction du nb choisi
+      lapply(1:nbMax, function(i) {
+        conditionalPanel(
+          condition = paste0('output.nbEdu',i),
+          textInput(paste0("eduTxt1",i),label = "School"),
+          textInput(paste0("eduTxt2",i),label = "Degree"),
+          textInput(paste0("eduTxt3",i),label = "Periode (format mm/yyyy)"),
+
+
+          # choix du niveau si pays choisi=France
+          conditionalPanel(
+            condition=paste0('output.Education',i),
+            sliderInput(paste0("levelEdu",i),"Estimer le résultat:(1-Mauvais->10-Excellent)",min=1,max=10,value=5)
+          )
+        )
+      }),
+
+      ### WORK EXPERIENCE
+      # titre et boutons + -
+      h3(textOutput("weTitle")),
+      actionButton("plusWE", label = "+"),
+      actionButton("moinsWE", label = "-"),
+      hr(),
+
+      # apparition des champs activities en fonction du nb choisi
+      lapply(1:nbMax, function(i) {
+        conditionalPanel(
+          condition = paste0('output.nbWE',i),
+          textInput(paste0("weTxt1",i),label = "Company"),
+          textInput(paste0("weTxt2",i),label = "Task "),
+          textInput(paste0("weTxt3",i),label = "Periode (format mm/yyyy)")
+
+
+          # choix du niveau si pays choisi=France
+          # conditionalPanel(
+          #   condition=paste0('output.WorkExperience',i),
+          #   sliderInput(paste0("levelWE",i),"Estimer le résultat:(1-Mauvais->10-Excellent)",min=1,max=10,value=5)
+          # )
+        )
+      }),
+
       ### SKILLS
             # titre et boutons + -
             h3(textOutput("skillsTitle")),
@@ -122,6 +178,27 @@ ui <- fluidPage(
           textOutput("adresseComplet"),
           textOutput("mailComplet"),
           textOutput("numeroComplet"),
+
+          ### OBJECTIF
+          #uiOutput("user_text_obj"),
+          textOutput("user_text"),
+
+          ### EDUCATION
+          # affichage education
+          conditionalPanel(
+            condition = paste0('output.nbEdu',1),
+            tableOutput("eduTxt")
+          ),
+
+
+
+          ### WORK EXPERIENCE
+          # affichage work exp.
+          conditionalPanel(
+            condition = paste0('output.nbWE',1),
+            tableOutput("weTxt")
+          ),
+
       ### SKILLS
           # affichage skills
           conditionalPanel(
@@ -212,6 +289,109 @@ server <- function(input, output, session) {
   output$numeroComplet <- renderText(
     catNumeroComplet(input$countryCode, input$tonNumero, language())
   )
+
+  ### OBJECTIF
+  output$user_text <- renderText(input$user_text_Obj)
+
+
+  ### EDUCATION
+  # MAJ langue
+  observeEvent(input$Langue,{
+    # mise a jour du titre de la catégorie "education" en fonction du pays choisi
+    output$eduTitle<-renderText({paste(cat["edu",input$Langue])})
+  }) # fin observeEvent
+
+  # Création du texte à afficher (output$eduTxt) et du texte à downloader (eduTxt)
+  output$eduTxt<-renderTable({eduTxt()[-2]})
+  eduTxt<-function(){
+    eduPrintLength<-min(nbMax,input$plusEdu-input$moinsEdu)
+    # data frame education : 1ligne=1education
+    if (eduPrintLength>0) {
+      eduTxt<-data.frame()
+
+      for (i in 1:eduPrintLength) {
+        eduTxt[i,1]<-ifelse(input[[paste0("eduTxt1",i)]]!="",
+                            # formation
+                            paste(input[[paste0("eduTxt1",i)]],
+                                  " : ",
+                                  input[[paste0("eduTxt2",i)]],
+                                  input[[paste0("eduTxt3",i)]],
+                                  ifelse(input$Langue=="France",
+                                         paste(", ",input[[paste0("levelEdu",i)]])
+                                         ,"")
+                            )
+                            ,"")
+        eduTxt[i,2]<-paste0(cat["edu",input$Langue])
+      }
+      names(eduTxt)<-c(paste0(cat["edu",input$Langue]),"type")
+      eduTxt
+
+    }
+  }
+
+  # condition d'appparition des champs education supplémentaires
+  lapply(1:nbMax, function(i) {
+    output[[paste0("nbEdu",i)]] <- reactive(input$plusEdu-input$moinsEdu>=i)
+    outputOptions(output, paste0("nbEdu",i), suspendWhenHidden = FALSE)
+  })
+
+  # condition d'apparition du niveau
+  lapply(1:nbMax, function(i) {
+    output[[paste0("Education",i)]] <- reactive(input$Langue=="France" && input$plusEdu-input$moinsEdu>=i)
+    outputOptions(output, paste0("Education",i), suspendWhenHidden = FALSE)
+  })
+
+
+
+
+
+  ### WORK EXPERIENCE
+  # MAJ langue
+  observeEvent(input$Langue,{
+    # mise a jour du titre de la catégorie "education" en fonction du pays choisi
+    output$weTitle<-renderText({paste(cat["work",input$Langue])})
+  }) # fin observeEvent
+
+  # Création du texte à afficher (output$eduTxt) et du texte à downloader (eduTxt)
+  output$weTxt<-renderTable({weTxt()[-2]})
+  weTxt<-function(){
+    wePrintLength<-min(nbMax,input$plusWE-input$moinsWE)
+    # data frame education : 1ligne=1education
+    if (wePrintLength>0) {
+      weTxt<-data.frame()
+
+      for (i in 1:wePrintLength) {
+        weTxt[i,1]<-ifelse(input[[paste0("weTxt1",i)]]!="",
+                           # exp. pro.
+                           paste(input[[paste0("weTxt1",i)]],
+                                 " : ",
+                                 input[[paste0("weTxt2",i)]],
+                                 input[[paste0("weTxt3",i)]]
+                                 # ifelse(input$Langue=="France",
+                                 #        paste(", ",input[[paste0("levelWE",i)]])
+                                 #        ,"")
+                           )
+                           ,"")
+        weTxt[i,2]<-paste0(cat["work",input$Langue])
+      }
+      names(weTxt)<-c(paste0(cat["work",input$Langue]),"weTxt1")
+      weTxt
+
+    }
+  }
+
+  # condition d'appparition des champs education supplémentaires
+  lapply(1:nbMax, function(i) {
+    output[[paste0("nbWE",i)]] <- reactive(input$plusWE-input$moinsWE>=i)
+    outputOptions(output, paste0("nbWE",i), suspendWhenHidden = FALSE)
+  })
+
+  # condition d'apparition du niveau
+  lapply(1:nbMax, function(i) {
+    output[[paste0("Work Experience")]] <- reactive(input$Langue=="France" && input$plusWE-input$moinsWE>=i)
+    outputOptions(output, paste0("Work Experience"), suspendWhenHidden = FALSE)
+  })
+
 ### SKILLS
   # MAJ en fonction de la langue
     observeEvent(input$Langue,{
