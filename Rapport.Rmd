@@ -10,6 +10,8 @@ output:
 # mode d'emploi de l'appli
 ## Utilisation
 
+![](headerInstructions.jpg)
+![](Diapositive1.JPG)
 
 ## Exploitation et maintenance
 
